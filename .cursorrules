@@ -1,0 +1,37 @@
+# Project Context
+This is a SaaS marketplace for n8n workflow templates with AI assistant.
+
+# Tech Stack
+- Backend: Node.js 20, Express, TypeScript, Prisma, PostgreSQL
+- Frontend: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui
+- Infrastructure: Docker Compose, n8n, Redis
+- AI: Azure OpenAI (Claude via Anthropic SDK)
+- Payments: Stripe
+
+# Code Style
+- Use TypeScript strict mode
+- Use async/await (no callbacks)
+- Use ES6+ features
+- 2 spaces indent
+- No console.log in production code
+- Always add error handling
+- Use Prisma for all database operations
+- Follow Conventional Commits format
+
+# File Structure Rules
+- Backend files go in /backend/src/
+- Frontend files go in /frontend/src/
+- Shared types in /backend/src/types/
+- Use named exports (not default) for services
+
+# When Creating Files
+- Always include proper TypeScript types
+- Add JSDoc comments for functions
+- Include error handling
+- Add input validation
+- Never hardcode secrets (use env variables)
+
+# Git Rules
+- Never commit to main directly
+- Use feature branches: feature/sprint-X-name
+- Conventional Commits: feat(scope): description
