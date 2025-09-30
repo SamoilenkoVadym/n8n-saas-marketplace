@@ -18,4 +18,34 @@ api.interceptors.request.use(
   }
 );
 
+// Template API functions
+export interface TemplateFilters {
+  category?: string;
+  tags?: string;
+  search?: string;
+  onlyFree?: boolean;
+}
+
+export const getTemplates = async (filters?: TemplateFilters) => {
+  const params = new URLSearchParams();
+
+  if (filters?.category) params.append('category', filters.category);
+  if (filters?.tags) params.append('tags', filters.tags);
+  if (filters?.search) params.append('search', filters.search);
+  if (filters?.onlyFree) params.append('onlyFree', 'true');
+
+  const response = await api.get(`/api/templates?${params.toString()}`);
+  return response.data;
+};
+
+export const getTemplate = async (id: string) => {
+  const response = await api.get(`/api/templates/${id}`);
+  return response.data;
+};
+
+export const downloadTemplate = async (id: string) => {
+  const response = await api.post(`/api/templates/${id}/download`);
+  return response.data;
+};
+
 export default api;

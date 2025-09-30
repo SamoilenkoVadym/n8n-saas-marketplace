@@ -27,9 +27,14 @@ export default function HomePage() {
           <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
             Build, deploy, and share powerful automation workflows with AI assistance
           </p>
-          <div className="flex gap-4 justify-center">
-            <Link href="/signup">
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link href="/marketplace">
               <Button size="lg" className="text-lg px-8">
+                Browse Templates
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button size="lg" variant="outline" className="text-lg px-8">
                 Get Started
               </Button>
             </Link>
