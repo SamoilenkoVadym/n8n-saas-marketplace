@@ -20,16 +20,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <ProtectedRoute>
       <Toaster position="top-right" />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         {/* Header */}
-        <header className="bg-white border-b">
+        <header className="bg-card/80 backdrop-blur-sm border-b border-border/40 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-6">
-                <Link href="/dashboard" className="text-xl font-bold">
-                  n8n Marketplace
+                <Link href="/dashboard" className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-gradient-aimpress">
+                    Aimpress
+                  </span>
+                  <span className="hidden sm:inline text-xs font-medium text-muted-foreground">
+                    by ai-impress.com
+                  </span>
                 </Link>
-                <nav className="flex items-center gap-4">
+                <nav className="hidden md:flex items-center gap-4 ml-4">
                   <Link
                     href="/dashboard"
                     className="text-sm font-medium hover:text-primary transition-colors"
@@ -62,7 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Main Content */}
-        <main>{children}</main>
+        <main className="container mx-auto px-4 py-8">{children}</main>
       </div>
     </ProtectedRoute>
   );

@@ -71,16 +71,20 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Workflow Marketplace</h1>
-          <p className="text-gray-600">Browse and download n8n workflow templates</p>
+        <div className="mb-8 animate-fade-in-up">
+          <h1 className="text-4xl md:text-5xl font-bold mb-2">
+            Workflow Marketplace <span className="text-gradient-aimpress">by Aimpress</span>
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Curated AI-powered automation templates for every business need
+          </p>
         </div>
 
         {/* Filters */}
-        <div className="bg-white p-6 rounded-lg shadow-sm mb-8 space-y-4">
+        <div className="card-premium p-6 mb-8 space-y-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="search">Search</Label>

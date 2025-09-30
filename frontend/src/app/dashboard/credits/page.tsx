@@ -35,15 +35,17 @@ export default function CreditsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Purchase Credits</h1>
-        <p className="text-muted-foreground">
-          Choose a credit package to buy workflow automations
+    <div className="space-y-8">
+      <div className="animate-fade-in-up">
+        <h1 className="text-4xl md:text-5xl font-bold mb-2">
+          Power Your <span className="text-gradient-aimpress">Automation Journey</span>
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          Purchase credits to unlock premium AI-powered templates. Managed by <span className="font-semibold text-foreground">Aimpress LTD</span>
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
         {packages.map((pkg) => (
           <CreditPackageCard
             key={pkg.id}
@@ -59,6 +61,22 @@ export default function CreditsPage() {
           No credit packages available at the moment.
         </div>
       )}
+
+      {/* Info Section */}
+      <div className="card-premium p-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <div className="max-w-3xl mx-auto text-center space-y-4">
+          <h3 className="text-2xl font-bold">Why Credits?</h3>
+          <p className="text-muted-foreground leading-relaxed">
+            Our credit system gives you maximum flexibility. No recurring subscriptions, no surprise bills.
+            Purchase only what you need, when you need it. Each template clearly shows its credit cost,
+            and credits never expire.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            <span className="font-semibold text-foreground">Every template</span> includes AI-powered capabilities,
+            expert documentation, and ongoing support from the Aimpress team.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
