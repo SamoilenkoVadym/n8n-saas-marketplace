@@ -1,0 +1,30 @@
+{
+  "name": "n8n-saas-marketplace",
+  "version": "1.0.0",
+  "description": "n8n SaaS Marketplace - A platform for discovering and deploying n8n workflows",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspaces",
+    "build:backend": "npm run build --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "install:all": "npm install && npm install --workspaces"
+  },
+  "keywords": [
+    "n8n",
+    "marketplace",
+    "workflow",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
