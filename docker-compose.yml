@@ -67,7 +67,7 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=4000
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/n8n_marketplace?schema=public
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/marketplace?schema=public
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=super-secret-jwt-key-change-in-production-please
       - JWT_EXPIRES_IN=7d
