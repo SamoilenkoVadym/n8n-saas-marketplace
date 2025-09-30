@@ -15,17 +15,20 @@ router.post('/:templateId', authMiddleware, async (req: AuthRequest, res: Respon
     res.json(purchase);
   } catch (error: any) {
     console.error('Purchase template error:', error);
-    
+
     if (error.message === 'Template not found') {
-      return res.status(404).json({ error: error.message });
+      res.status(404).json({ error: error.message });
+      return;
     }
     if (error.message === 'Insufficient credits') {
-      return res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
+      return;
     }
     if (error.message === 'Template already purchased') {
-      return res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
+      return;
     }
-    
+
     res.status(500).json({ error: 'Failed to purchase template' });
   }
 });

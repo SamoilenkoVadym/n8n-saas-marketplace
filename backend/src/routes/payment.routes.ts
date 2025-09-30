@@ -1,5 +1,6 @@
 import { Router, Response } from 'express';
 import { paymentService } from '../services/payment.service';
+import { billingService } from '../services/billing.service';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = Router();
@@ -7,15 +8,23 @@ const router = Router();
 // Create Stripe checkout session
 router.post('/create-checkout', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
-    const { credits, amount } = req.body;
+    const { packageId } = req.body;
     const userId = req.user!.id;
 
-    if (!credits || !amount || credits <= 0 || amount <= 0) {
-      res.status(400).json({ error: 'Invalid credits or amount' });
+    if (!packageId) {
+      res.status(400).json({ error: 'Package ID is required' });
       return;
     }
 
-    const session = await paymentService.createCheckoutSession(userId, credits, amount);
+    // Get package details
+    const pkg = billingService.getPackageById(packageId);
+    if (!pkg) {
+      res.status(404).json({ error: 'Package not found' });
+      return;
+    }
+
+    console.log('Package details:', { packageId, credits: pkg.credits, price: pkg.price });
+    const session = await paymentService.createCheckoutSession(userId, pkg.credits, pkg.price);
 
     res.json({
       sessionId: session.id,

@@ -3,7 +3,13 @@ import { prisma } from '../config/database';
 import Stripe from 'stripe';
 
 export class PaymentService {
-  async createCheckoutSession(userId: string, credits: number, amount: number) {
+  async createCheckoutSession(userId: string, credits: number, amountInCents: number) {
+    console.log('Creating Stripe session:', {
+      credits,
+      amountInCents,
+      amountInDollars: (amountInCents / 100).toFixed(2)
+    });
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -14,25 +20,25 @@ export class PaymentService {
               name: `${credits} Credits`,
               description: `Purchase ${credits} credits for n8n templates`,
             },
-            unit_amount: amount * 100, // Convert to cents
+            unit_amount: amountInCents, // Amount in cents
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
+      success_url: `${process.env.FRONTEND_URL}/dashboard/credits/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/dashboard/credits`,
       metadata: {
         userId,
         credits: credits.toString(),
       },
     });
 
-    // Create payment record
+    // Create payment record (amount stored in cents)
     await prisma.payment.create({
       data: {
         userId,
-        amount,
+        amount: amountInCents,
         credits,
         status: 'pending',
         stripeSessionId: session.id,
@@ -59,7 +65,7 @@ export class PaymentService {
     const stripeSessionId = session.id;
 
     // Update payment status
-    const payment = await prisma.payment.update({
+    await prisma.payment.update({
       where: { stripeSessionId },
       data: { status: 'completed' },
     });

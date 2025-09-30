@@ -18,6 +18,7 @@ interface AuthState {
   register: (email: string, password: string, name?: string) => Promise<void>;
   logout: () => void;
   fetchMe: () => Promise<void>;
+  updateCredits: (credits: number) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -72,5 +73,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.removeItem('token');
       throw new Error(errorMessage);
     }
+  },
+
+  updateCredits: (credits: number) => {
+    set((state) => ({
+      user: state.user ? { ...state.user, credits } : null,
+    }));
   },
 }));

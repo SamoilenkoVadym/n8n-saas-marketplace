@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes';
 import templateRoutes from './routes/template.routes';
 import paymentRoutes from './routes/payment.routes';
 import purchaseRoutes from './routes/purchase.routes';
+import billingRoutes from './routes/billing.routes';
 import { stripe } from './config/stripe';
 import { paymentService } from './services/payment.service';
 
@@ -22,12 +23,14 @@ app.post(
     const sig = req.headers['stripe-signature'];
 
     if (!sig) {
-      return res.status(400).send('Missing stripe-signature header');
+      res.status(400).send('Missing stripe-signature header');
+      return;
     }
 
     if (!process.env.STRIPE_WEBHOOK_SECRET) {
       console.error('STRIPE_WEBHOOK_SECRET is not configured');
-      return res.status(500).send('Webhook secret not configured');
+      res.status(500).send('Webhook secret not configured');
+      return;
     }
 
     try {
@@ -42,7 +45,7 @@ app.post(
       res.json({ received: true });
     } catch (err) {
       console.error('Webhook error:', err);
-      return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   }
 );
@@ -57,9 +60,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/purchases', purchaseRoutes);
+app.use('/api/billing', billingRoutes);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
