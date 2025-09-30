@@ -289,8 +289,14 @@ export const deleteTemplate = async (id: string, userId: string, userRole: strin
   return { message: 'Template deleted successfully' };
 };
 
-// Check if user purchased template (stub for Sprint 3)
+// Check if user purchased template
 export const checkUserPurchased = async (userId: string, templateId: string): Promise<boolean> => {
-  // TODO: Implement in Sprint 3 with Purchase model
-  return false;
+  const purchase = await prisma.purchase.findFirst({
+    where: {
+      userId,
+      templateId,
+    },
+  });
+
+  return !!purchase;
 };
