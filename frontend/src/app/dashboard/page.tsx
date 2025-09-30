@@ -65,14 +65,14 @@ export default function DashboardPage() {
 
         {/* Feature Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="opacity-50 cursor-not-allowed">
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => router.push('/marketplace')}>
             <CardHeader>
               <CardTitle>Marketplace</CardTitle>
               <CardDescription>Browse n8n workflows</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button disabled className="w-full">
-                Coming Soon
+              <Button className="w-full">
+                Explore Templates
               </Button>
             </CardContent>
           </Card>
