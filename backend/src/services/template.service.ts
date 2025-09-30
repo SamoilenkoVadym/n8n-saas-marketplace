@@ -1,0 +1,296 @@
+import prisma from '../config/database';
+
+export interface CreateTemplateData {
+  name: string;
+  description: string;
+  category: string;
+  tags: string[];
+  price: number;
+  workflowJson: any;
+  previewImage?: string;
+  isPublished?: boolean;
+  authorId: string;
+}
+
+export interface UpdateTemplateData {
+  name?: string;
+  description?: string;
+  category?: string;
+  tags?: string[];
+  price?: number;
+  workflowJson?: any;
+  previewImage?: string;
+  isPublished?: boolean;
+}
+
+export interface TemplateFilters {
+  category?: string;
+  tags?: string[];
+  search?: string;
+  onlyFree?: boolean;
+}
+
+// Validate workflow JSON structure
+const validateWorkflowJson = (workflowJson: any): boolean => {
+  if (!workflowJson || typeof workflowJson !== 'object') {
+    return false;
+  }
+
+  // Check for required n8n workflow properties
+  if (!workflowJson.nodes || !Array.isArray(workflowJson.nodes)) {
+    return false;
+  }
+
+  if (!workflowJson.connections || typeof workflowJson.connections !== 'object') {
+    return false;
+  }
+
+  return true;
+};
+
+// Create a new template (admin only)
+export const create = async (data: CreateTemplateData) => {
+  // Validate workflow JSON
+  if (!validateWorkflowJson(data.workflowJson)) {
+    throw new Error('Invalid workflow JSON: must contain nodes and connections');
+  }
+
+  const template = await prisma.template.create({
+    data: {
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      tags: data.tags,
+      price: data.price,
+      workflowJson: data.workflowJson,
+      previewImage: data.previewImage,
+      isPublished: data.isPublished ?? false,
+      authorId: data.authorId,
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  return template;
+};
+
+// List published templates with filters
+export const list = async (filters?: TemplateFilters) => {
+  const where: any = {
+    isPublished: true,
+  };
+
+  // Apply filters
+  if (filters?.category) {
+    where.category = filters.category;
+  }
+
+  if (filters?.tags && filters.tags.length > 0) {
+    where.tags = {
+      hasSome: filters.tags,
+    };
+  }
+
+  if (filters?.search) {
+    where.OR = [
+      { name: { contains: filters.search, mode: 'insensitive' } },
+      { description: { contains: filters.search, mode: 'insensitive' } },
+    ];
+  }
+
+  if (filters?.onlyFree) {
+    where.price = 0;
+  }
+
+  const templates = await prisma.template.findMany({
+    where,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      category: true,
+      tags: true,
+      price: true,
+      previewImage: true,
+      downloads: true,
+      authorId: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      isPublished: true,
+      createdAt: true,
+      updatedAt: true,
+      // Exclude workflowJson from list
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  return templates;
+};
+
+// Get template by ID
+export const getById = async (id: string, userId?: string) => {
+  const template = await prisma.template.findUnique({
+    where: { id },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  if (!template) {
+    throw new Error('Template not found');
+  }
+
+  // Check if user has access to workflowJson
+  const hasAccess =
+    template.price === 0 || // Free template
+    userId === template.authorId || // User is the author
+    (userId && await checkUserPurchased(userId, id)); // User purchased it
+
+  // If no access, remove workflowJson
+  if (!hasAccess) {
+    return {
+      ...template,
+      workflowJson: undefined,
+      hasAccess: false,
+    };
+  }
+
+  return {
+    ...template,
+    hasAccess: true,
+  };
+};
+
+// Download template workflow
+export const download = async (id: string, userId: string) => {
+  const template = await prisma.template.findUnique({
+    where: { id },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!template) {
+    throw new Error('Template not found');
+  }
+
+  if (!template.isPublished) {
+    throw new Error('Template is not published');
+  }
+
+  // Check access
+  const hasAccess =
+    template.price === 0 || // Free template
+    userId === template.authorId || // User is the author
+    await checkUserPurchased(userId, id); // User purchased it
+
+  if (!hasAccess) {
+    throw new Error('Access denied: purchase required');
+  }
+
+  // Increment downloads counter
+  await prisma.template.update({
+    where: { id },
+    data: {
+      downloads: {
+        increment: 1,
+      },
+    },
+  });
+
+  return {
+    id: template.id,
+    name: template.name,
+    workflowJson: template.workflowJson,
+  };
+};
+
+// Update template
+export const update = async (id: string, userId: string, userRole: string, data: UpdateTemplateData) => {
+  const template = await prisma.template.findUnique({
+    where: { id },
+  });
+
+  if (!template) {
+    throw new Error('Template not found');
+  }
+
+  // Check permissions: author or admin
+  if (template.authorId !== userId && userRole !== 'admin') {
+    throw new Error('Unauthorized to update this template');
+  }
+
+  // Validate workflow JSON if provided
+  if (data.workflowJson && !validateWorkflowJson(data.workflowJson)) {
+    throw new Error('Invalid workflow JSON: must contain nodes and connections');
+  }
+
+  const updatedTemplate = await prisma.template.update({
+    where: { id },
+    data,
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  return updatedTemplate;
+};
+
+// Delete template
+export const deleteTemplate = async (id: string, userId: string, userRole: string) => {
+  const template = await prisma.template.findUnique({
+    where: { id },
+  });
+
+  if (!template) {
+    throw new Error('Template not found');
+  }
+
+  // Check permissions: author or admin
+  if (template.authorId !== userId && userRole !== 'admin') {
+    throw new Error('Unauthorized to delete this template');
+  }
+
+  await prisma.template.delete({
+    where: { id },
+  });
+
+  return { message: 'Template deleted successfully' };
+};
+
+// Check if user purchased template (stub for Sprint 3)
+export const checkUserPurchased = async (userId: string, templateId: string): Promise<boolean> => {
+  // TODO: Implement in Sprint 3 with Purchase model
+  return false;
+};
