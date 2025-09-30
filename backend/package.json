@@ -27,7 +27,8 @@
     "express": "^4.21.2",
     "helmet": "^8.0.0",
     "ioredis": "^5.4.2",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "stripe": "^18.5.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
