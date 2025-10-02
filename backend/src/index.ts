@@ -7,6 +7,7 @@ import templateRoutes from './routes/template.routes';
 import paymentRoutes from './routes/payment.routes';
 import purchaseRoutes from './routes/purchase.routes';
 import billingRoutes from './routes/billing.routes';
+import aiRoutes from './routes/ai.routes';
 import { stripe } from './config/stripe';
 import { paymentService } from './services/payment.service';
 
@@ -61,6 +62,7 @@ app.use('/api/templates', templateRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/purchases', purchaseRoutes);
 app.use('/api/billing', billingRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {

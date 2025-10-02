@@ -11,17 +11,19 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  email        String     @unique
-  passwordHash String
-  name         String?
-  credits      Int        @default(50)
-  role         String     @default("user")
-  templates    Template[]
-  purchases    Purchase[]
-  payments     Payment[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id              String              @id @default(uuid())
+  email           String              @unique
+  passwordHash    String
+  name            String?
+  credits         Int                 @default(50)
+  role            String              @default("user")
+  templates       Template[]
+  purchases       Purchase[]
+  payments        Payment[]
+  conversations   AiConversation[]
+  n8nConnection   UserN8nConnection?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 }
 
 model Template {
@@ -62,4 +64,25 @@ model Payment {
   stripeSessionId String   @unique
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model AiConversation {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  messages  Json     // Array of {role: 'user'|'assistant', content: string}
+  workflow  Json?    // Generated n8n workflow JSON
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserN8nConnection {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  apiKey    String   // Encrypted with crypto
+  baseUrl   String   // User's n8n instance URL
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
