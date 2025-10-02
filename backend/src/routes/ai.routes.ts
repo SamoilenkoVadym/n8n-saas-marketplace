@@ -2,8 +2,10 @@ import { Router, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { aiChatRateLimit } from '../middleware/rate-limit';
 import * as aiService from '../services/ai.service';
+import { PrismaClient } from '@prisma/client';
 
 const router = Router();
+const prisma = new PrismaClient();
 
 // All routes require authentication
 router.use(authMiddleware);
@@ -11,6 +13,7 @@ router.use(authMiddleware);
 /**
  * POST /api/ai/chat
  * Send a message and get a generated workflow
+ * Costs 5 credits per generation
  */
 router.post('/chat', aiChatRateLimit, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -37,7 +40,28 @@ router.post('/chat', aiChatRateLimit, async (req: AuthRequest, res: Response): P
       return;
     }
 
-    // Generate workflow
+    // Check user has enough credits BEFORE generation
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { credits: true },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    if (user.credits < aiService.AI_GENERATION_CREDIT_COST) {
+      res.status(400).json({
+        error: 'Insufficient credits',
+        message: `You need ${aiService.AI_GENERATION_CREDIT_COST} credits to generate a workflow. You have ${user.credits} credits.`,
+        creditsRequired: aiService.AI_GENERATION_CREDIT_COST,
+        creditsAvailable: user.credits,
+      });
+      return;
+    }
+
+    // Generate workflow (credits will be deducted in service on success)
     const result = await aiService.generateWorkflow(
       req.user.id,
       message.trim(),
@@ -87,6 +111,7 @@ router.get('/conversations', async (req: AuthRequest, res: Response): Promise<vo
 /**
  * POST /api/ai/conversations/:id/regenerate
  * Regenerate workflow from existing conversation
+ * Costs 5 credits per generation
  */
 router.post('/conversations/:id/regenerate', aiChatRateLimit, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -102,7 +127,28 @@ router.post('/conversations/:id/regenerate', aiChatRateLimit, async (req: AuthRe
       return;
     }
 
-    // Regenerate workflow
+    // Check user has enough credits BEFORE regeneration
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { credits: true },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    if (user.credits < aiService.AI_GENERATION_CREDIT_COST) {
+      res.status(400).json({
+        error: 'Insufficient credits',
+        message: `You need ${aiService.AI_GENERATION_CREDIT_COST} credits to regenerate a workflow. You have ${user.credits} credits.`,
+        creditsRequired: aiService.AI_GENERATION_CREDIT_COST,
+        creditsAvailable: user.credits,
+      });
+      return;
+    }
+
+    // Regenerate workflow (credits will be deducted in service on success)
     const result = await aiService.regenerateWorkflow(req.user.id, id);
 
     res.status(200).json(result);

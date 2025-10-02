@@ -5,10 +5,9 @@ import Link from 'next/link';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from '@/components/protected-route';
 import CreditBalance from '@/components/dashboard/CreditBalance';
-import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/store';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function MarketplaceLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { logout } = useAuthStore();
 
@@ -41,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <Link href="/dashboard" className="nav-link">
                     Dashboard
                   </Link>
-                  <Link href="/marketplace" className="nav-link">
+                  <Link href="/marketplace" className="nav-link-active">
                     Marketplace
                   </Link>
                   <Link href="/dashboard/ai-builder" className="nav-link">
@@ -67,7 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Main Content - Add top padding for fixed header */}
-        <main className="container mx-auto px-4 pt-24 pb-8">{children}</main>
+        <main className="pt-24">{children}</main>
       </div>
     </ProtectedRoute>
   );

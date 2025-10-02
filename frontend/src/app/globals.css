@@ -4,75 +4,22 @@
 
 @layer base {
   :root {
-    /* Aimpress Brand Colors - n8n inspired */
-    --aimpress-coral: 6 100% 67%; /* #FF6D5A */
-    --aimpress-purple: 255 100% 69%; /* #7B61FF */
-    --aimpress-coral-rgb: 255, 109, 90;
-    --aimpress-purple-rgb: 123, 97, 255;
+    /* Aimpress Brand Colors - Solid Colors Only (No Gradients) */
+    --denim: #1E3A5F;           /* Dark blue - headers, navigation */
+    --deep-turquoise: #0D9488;  /* Teal - links, active states */
+    --grey-blue: #94A3B8;       /* Secondary text, borders */
+    --orange: #FF6B35;          /* CTAs, important actions */
+    --pure: #FFF9E6;            /* Light backgrounds */
 
-    /* Base colors */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    /* Backgrounds */
+    --dark-bg: #1A2332;         /* Main dark background */
+    --card-bg: #2A3441;         /* Elevated cards */
+    --surface: #0F172A;         /* Deep surface color */
 
-    /* Primary uses coral */
-    --primary: 6 100% 67%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Secondary uses purple */
-    --secondary: 255 100% 69%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 6 100% 67%;
-    --radius: 1rem;
-
-    --chart-1: 6 100% 67%;
-    --chart-2: 255 100% 69%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 6 100% 67%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 255 100% 69%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 6 100% 67%;
-
-    --chart-1: 6 100% 67%;
-    --chart-2: 255 100% 69%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
   }
 }
 
@@ -82,7 +29,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#1A2332] text-white;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
     font-feature-settings: 'cv11', 'ss01';
     font-variation-settings: 'opsz' 32;
@@ -91,47 +38,11 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight;
+    @apply font-bold tracking-tight text-white;
   }
 
   p {
-    @apply leading-relaxed;
-  }
-}
-
-/* Aimpress Gradient Utilities */
-@layer utilities {
-  .bg-gradient-aimpress {
-    background: linear-gradient(135deg, hsl(var(--aimpress-coral)) 0%, hsl(var(--aimpress-purple)) 100%);
-  }
-
-  .bg-gradient-aimpress-reverse {
-    background: linear-gradient(135deg, hsl(var(--aimpress-purple)) 0%, hsl(var(--aimpress-coral)) 100%);
-  }
-
-  .text-gradient-aimpress {
-    background: linear-gradient(135deg, hsl(var(--aimpress-coral)) 0%, hsl(var(--aimpress-purple)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .border-gradient-aimpress {
-    border: 1px solid transparent;
-    background: linear-gradient(white, white) padding-box,
-                linear-gradient(135deg, hsl(var(--aimpress-coral)) 0%, hsl(var(--aimpress-purple)) 100%) border-box;
-  }
-
-  .glassmorphism {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .dark .glassmorphism {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    @apply leading-relaxed text-[#94A3B8];
   }
 }
 
@@ -146,21 +57,12 @@
     }
   }
 
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-
-  @keyframes gradient-shift {
+  @keyframes pulse-orange {
     0%, 100% {
-      background-position: 0% 50%;
+      box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4);
     }
     50% {
-      background-position: 100% 50%;
+      box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
     }
   }
 
@@ -190,13 +92,8 @@
     animation: float 6s ease-in-out infinite;
   }
 
-  .animate-shimmer {
-    animation: shimmer 2s linear infinite;
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient-shift 8s ease infinite;
+  .animate-pulse-orange {
+    animation: pulse-orange 2s ease-in-out infinite;
   }
 
   .animate-fade-in-up {
@@ -208,25 +105,99 @@
   }
 }
 
-/* Premium Card Styles */
+/* Aimpress Component Styles - Solid Colors Only */
 @layer components {
-  .card-premium {
-    @apply rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300;
-    @apply bg-card border border-border;
+  /* Navigation */
+  .nav-aimpress {
+    @apply fixed top-0 left-0 right-0 z-50;
+    @apply bg-[#1E3A5F] border-b border-[#FF6B35]/10;
+    @apply backdrop-blur-sm;
   }
 
-  .card-premium:hover {
+  .nav-link {
+    @apply text-[#94A3B8] hover:text-[#FF6B35];
+    @apply transition-colors duration-200 font-medium;
+  }
+
+  .nav-link-active {
+    @apply text-[#0D9488] font-semibold;
+  }
+
+  /* Cards */
+  .card-aimpress {
+    @apply rounded-2xl shadow-lg border border-[#94A3B8]/10;
+    @apply bg-[#2A3441] transition-all duration-300;
+  }
+
+  .card-aimpress:hover {
+    @apply shadow-xl border-[#0D9488]/30;
     transform: translateY(-4px);
   }
 
-  .btn-gradient {
-    @apply bg-gradient-aimpress text-white font-semibold rounded-xl;
-    @apply hover:shadow-lg transition-all duration-300;
-    @apply hover:scale-105;
+  /* Buttons - Solid Colors Only */
+  .btn-primary {
+    @apply bg-[#FF6B35] hover:bg-[#E55A2B] text-white font-semibold;
+    @apply rounded-xl px-6 py-3 transition-all duration-300;
+    @apply shadow-lg hover:shadow-xl;
   }
 
-  .badge-gradient {
-    @apply rounded-full px-4 py-1 text-sm font-medium;
-    @apply border-gradient-aimpress;
+  .btn-secondary {
+    @apply bg-[#0D9488] hover:bg-[#0B7A6F] text-white font-semibold;
+    @apply rounded-xl px-6 py-3 transition-all duration-300;
+    @apply shadow-lg hover:shadow-xl;
+  }
+
+  .btn-ghost {
+    @apply border-2 border-[#94A3B8] hover:border-[#FF6B35];
+    @apply text-[#94A3B8] hover:text-[#FF6B35];
+    @apply rounded-xl px-6 py-3 transition-all duration-300;
+    @apply bg-transparent;
+  }
+
+  /* Inputs */
+  .input-aimpress {
+    @apply bg-[#2A3441] border border-[#94A3B8]/20;
+    @apply rounded-xl px-4 py-3 text-white;
+    @apply focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50;
+    @apply focus:border-[#FF6B35];
+  }
+
+  /* Badges - Solid Colors */
+  .badge-orange {
+    @apply bg-[#FF6B35]/10 text-[#FF6B35] border border-[#FF6B35]/30;
+    @apply rounded-full px-4 py-1.5 text-sm font-medium;
+  }
+
+  .badge-turquoise {
+    @apply bg-[#0D9488]/10 text-[#0D9488] border border-[#0D9488]/30;
+    @apply rounded-full px-4 py-1.5 text-sm font-medium;
+  }
+
+  /* Links */
+  .link-aimpress {
+    @apply text-[#0D9488] hover:text-[#FF6B35];
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Scrollbar Styling */
+@layer utilities {
+  .scrollbar-aimpress::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-aimpress::-webkit-scrollbar-track {
+    background: #1A2332;
+    border-radius: 4px;
+  }
+
+  .scrollbar-aimpress::-webkit-scrollbar-thumb {
+    background: #94A3B8;
+    border-radius: 4px;
+  }
+
+  .scrollbar-aimpress::-webkit-scrollbar-thumb:hover {
+    background: #0D9488;
   }
 }

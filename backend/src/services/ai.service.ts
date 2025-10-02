@@ -64,7 +64,12 @@ interface WorkflowGenerationResult {
   isValid: boolean;
   message: string;
   validationErrors?: string[];
+  creditsUsed?: number;
+  creditsRemaining?: number;
 }
+
+// Credit cost for AI workflow generation
+export const AI_GENERATION_CREDIT_COST = 5;
 
 /**
  * Validate n8n workflow structure
@@ -222,11 +227,24 @@ export async function generateWorkflow(
           });
         }
 
+        // Deduct credits from user (ONLY after successful generation)
+        const updatedUser = await prisma.user.update({
+          where: { id: userId },
+          data: {
+            credits: { decrement: AI_GENERATION_CREDIT_COST },
+          },
+          select: { credits: true },
+        });
+
+        console.log(`Credits deducted: ${AI_GENERATION_CREDIT_COST}, Remaining: ${updatedUser.credits}`);
+
         return {
           conversationId: conversation.id,
           workflow,
           isValid: true,
           message: 'Workflow generated successfully',
+          creditsUsed: AI_GENERATION_CREDIT_COST,
+          creditsRemaining: updatedUser.credits,
         };
       }
 

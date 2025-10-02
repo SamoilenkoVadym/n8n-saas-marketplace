@@ -71,20 +71,19 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8 animate-fade-in-up">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">
-            Workflow Marketplace <span className="text-gradient-aimpress">by Aimpress</span>
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Curated AI-powered automation templates for every business need
-          </p>
-        </div>
+    <div className="container mx-auto px-4 pb-8">
+      {/* Header */}
+      <div className="mb-8 animate-fade-in-up">
+        <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">
+          Workflow Marketplace <span className="text-[#FF6B35]">by Aimpress</span>
+        </h1>
+        <p className="text-lg text-[#94A3B8]">
+          Curated AI-powered automation templates for every business need
+        </p>
+      </div>
 
-        {/* Filters */}
-        <div className="card-premium p-6 mb-8 space-y-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+      {/* Filters */}
+      <div className="card-aimpress p-6 mb-8 space-y-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="search">Search</Label>
@@ -160,7 +159,6 @@ export default function MarketplacePage() {
             ))}
           </div>
         )}
-      </div>
     </div>
   );
 }
