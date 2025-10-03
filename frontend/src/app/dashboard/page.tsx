@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
+import { getUserPurchases, getAIConversations } from '@/lib/api';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sparkles, CreditCard, ShoppingBag, TrendingUp, ArrowRight } from 'lucide-react';
@@ -12,10 +13,30 @@ export default function DashboardPage() {
   const router = useRouter();
   const { user } = useAuthStore();
   const [mounted, setMounted] = useState(false);
+  const [purchaseCount, setPurchaseCount] = useState(0);
+  const [aiTemplatesCount, setAiTemplatesCount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const [purchases, aiConversations] = await Promise.all([
+        getUserPurchases().catch(() => []),
+        getAIConversations().catch(() => ({ conversations: [] }))
+      ]);
+
+      setPurchaseCount(purchases.length || 0);
+      setAiTemplatesCount(aiConversations.conversations?.length || 0);
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!user || !mounted) {
     return null;
@@ -56,31 +77,43 @@ export default function DashboardPage() {
           </div>
         </Card>
 
-        {/* Templates Owned */}
-        <Card className="card-premium p-6">
+        {/* Templates Owned (AI Generated) */}
+        <Card className="card-premium p-6 cursor-pointer hover:border-primary/50 transition-colors" onClick={() => router.push('/dashboard/ai-templates')}>
           <div className="flex items-start justify-between mb-4">
             <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
-              <ShoppingBag className="h-6 w-6 text-secondary" />
+              <Sparkles className="h-6 w-6 text-secondary" />
             </div>
+            <Link href="/dashboard/ai-templates">
+              <Button size="sm" variant="ghost" className="group">
+                View
+                <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Templates Owned</p>
-            <p className="text-3xl font-bold">0</p>
-            <p className="text-xs text-muted-foreground">Start browsing the marketplace</p>
+            <p className="text-sm font-medium text-muted-foreground">AI Templates Created</p>
+            <p className="text-3xl font-bold">{loading ? '...' : aiTemplatesCount}</p>
+            <p className="text-xs text-muted-foreground">Generated with AI Builder</p>
           </div>
         </Card>
 
-        {/* Activity */}
-        <Card className="card-premium p-6">
+        {/* Recent Purchases */}
+        <Card className="card-premium p-6 cursor-pointer hover:border-primary/50 transition-colors" onClick={() => router.push('/dashboard/purchases')}>
           <div className="flex items-start justify-between mb-4">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-primary" />
+              <ShoppingBag className="h-6 w-6 text-primary" />
             </div>
+            <Link href="/dashboard/purchases">
+              <Button size="sm" variant="ghost" className="group">
+                View
+                <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Recent Purchases</p>
-            <p className="text-3xl font-bold">0</p>
-            <p className="text-xs text-muted-foreground">Purchase history</p>
+            <p className="text-sm font-medium text-muted-foreground">Marketplace Purchases</p>
+            <p className="text-3xl font-bold">{loading ? '...' : purchaseCount}</p>
+            <p className="text-xs text-muted-foreground">Templates purchased</p>
           </div>
         </Card>
       </div>

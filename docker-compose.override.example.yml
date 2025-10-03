@@ -1,0 +1,23 @@
+version: '3.8'
+
+# EXAMPLE OVERRIDE FILE
+# Copy this file to docker-compose.override.yml and fill in your actual secrets
+# Command: cp docker-compose.override.example.yml docker-compose.override.yml
+
+services:
+  backend:
+    environment:
+      # Azure OpenAI Configuration
+      # Get your key from: https://portal.azure.com
+      - AZURE_OPENAI_API_KEY=your_azure_openai_api_key_here
+
+      # Security Keys
+      # Generate JWT_SECRET: openssl rand -base64 32
+      # Generate ENCRYPTION_KEY: openssl rand -hex 32
+      - JWT_SECRET=your_super_secret_jwt_key_min_32_chars
+      - ENCRYPTION_KEY=your_64_character_hex_encryption_key_generate_with_openssl_rand_hex_32
+
+      # Stripe Configuration (optional - only if using payments)
+      # Get your keys from: https://dashboard.stripe.com/apikeys
+      - STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+      - STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret

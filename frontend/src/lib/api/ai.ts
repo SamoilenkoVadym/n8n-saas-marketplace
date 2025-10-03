@@ -60,6 +60,11 @@ export const sendMessage = async (
       throw insufficientError;
     }
 
+    // Special handling for AI service unavailable
+    if (response.status === 503) {
+      throw new Error('AI service is currently unavailable. Please contact support if Azure OpenAI credentials are not configured.');
+    }
+
     throw new Error(error.error || 'Failed to generate workflow');
   }
 

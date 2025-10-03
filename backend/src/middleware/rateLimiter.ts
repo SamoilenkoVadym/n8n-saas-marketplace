@@ -74,18 +74,18 @@ export function createRateLimiter(options: RateLimitOptions) {
  * Predefined rate limiters for different endpoints
  */
 
-// Auth endpoints: 5 requests per minute
+// Auth endpoints: 50 requests per minute (increased for development)
 export const authRateLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
-  max: 5,
+  max: 50,
   message: 'Too many authentication attempts, please try again in a minute',
   keyPrefix: 'rl:auth',
 });
 
-// AI endpoints: 10 requests per minute
+// AI endpoints: 50 requests per minute (increased for development)
 export const aiRateLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
-  max: 10,
+  max: 50,
   message: 'Too many AI requests, please try again in a minute',
   keyPrefix: 'rl:ai',
 });

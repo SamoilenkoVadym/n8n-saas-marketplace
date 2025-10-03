@@ -16,6 +16,7 @@ interface Template {
   tags: string[];
   price: number;
   downloads: number;
+  isPublished: boolean;
   author: {
     id: string;
     name: string | null;

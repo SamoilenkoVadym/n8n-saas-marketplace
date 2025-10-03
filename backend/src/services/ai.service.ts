@@ -1,5 +1,6 @@
 import { AzureOpenAI } from 'openai';
 import { PrismaClient } from '@prisma/client';
+import n8nWorkflowsService from './n8n-workflows.service';
 
 const prisma = new PrismaClient();
 
@@ -7,8 +8,8 @@ const prisma = new PrismaClient();
 const client = new AzureOpenAI({
   apiKey: process.env.AZURE_OPENAI_API_KEY || '',
   endpoint: process.env.AZURE_OPENAI_ENDPOINT || '',
-  apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2025-01-01-preview',
-  deployment: process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o',
+  apiVersion: '2024-12-01-preview',
+  deployment: process.env.AZURE_OPENAI_DEPLOYMENT_NAME || 'gpt-4o',
 });
 
 const DEPLOYMENT_NAME = process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o';
@@ -158,6 +159,20 @@ export async function generateWorkflow(
 
   while (retryCount <= maxRetries) {
     try {
+      // Fetch relevant workflows from n8n-workflows database for context
+      let contextWorkflows = '';
+      try {
+        const aiWorkflows = await n8nWorkflowsService.getAIWorkflows(10);
+        contextWorkflows = `\n\nExample workflows from our database:\n${aiWorkflows
+          .map(
+            (w, i) =>
+              `${i + 1}. ${w.name}\n   Category: ${w.trigger_type} | Complexity: ${w.complexity} | Nodes: ${w.node_count}\n   Integrations: ${w.integrations.slice(0, 5).join(', ')}\n   Description: ${w.description}`
+          )
+          .join('\n\n')}`;
+      } catch (error) {
+        console.log('Failed to fetch context workflows, continuing without them');
+      }
+
       // Call Azure OpenAI (gpt-4o)
       console.log('Calling Azure OpenAI with deployment:', DEPLOYMENT_NAME);
       console.log('Messages count:', messages.length + 1); // +1 for system prompt
@@ -165,7 +180,7 @@ export async function generateWorkflow(
       const response = await client.chat.completions.create({
         model: DEPLOYMENT_NAME,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'system', content: SYSTEM_PROMPT + contextWorkflows },
           ...messages,
         ],
         temperature: 0.7,

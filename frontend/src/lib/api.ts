@@ -48,4 +48,16 @@ export const downloadTemplate = async (id: string) => {
   return response.data;
 };
 
+// User purchases
+export const getUserPurchases = async () => {
+  const response = await api.get('/api/purchases');
+  return response.data;
+};
+
+// AI conversations (Templates Owned)
+export const getAIConversations = async () => {
+  const response = await api.get('/api/ai/conversations');
+  return response.data;
+};
+
 export default api;

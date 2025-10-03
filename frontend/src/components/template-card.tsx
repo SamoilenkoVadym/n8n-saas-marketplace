@@ -10,6 +10,7 @@ interface Template {
   tags: string[];
   price: number;
   downloads: number;
+  isPublished: boolean;
   author: {
     id: string;
     name: string | null;
@@ -37,7 +38,10 @@ export default function TemplateCard({ template }: TemplateCardProps) {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/marketplace/${template.id}`);
+    // Only allow navigation if template is published
+    if (template.isPublished) {
+      router.push(`/marketplace/${template.id}`);
+    }
   };
 
   const truncateDescription = (text: string, maxLength: number = 100) => {
@@ -47,12 +51,23 @@ export default function TemplateCard({ template }: TemplateCardProps) {
 
   return (
     <Card
-      className="cursor-pointer hover:shadow-lg transition-shadow"
+      className={`transition-all ${
+        template.isPublished
+          ? 'cursor-pointer hover:shadow-lg'
+          : 'opacity-60 cursor-not-allowed border-dashed'
+      }`}
       onClick={handleClick}
     >
       <CardHeader>
         <div className="flex items-start justify-between gap-2 mb-2">
-          <CardTitle className="text-lg">{template.name}</CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2">
+            {template.name}
+            {!template.isPublished && (
+              <Badge variant="outline" className="bg-gray-500/10 text-gray-600 dark:text-gray-400">
+                Unpublished
+              </Badge>
+            )}
+          </CardTitle>
           <Badge variant={template.price === 0 ? 'default' : 'secondary'} className={template.price === 0 ? 'bg-green-500' : 'bg-orange-500'}>
             {template.price === 0 ? 'Free' : `${template.price} credits`}
           </Badge>

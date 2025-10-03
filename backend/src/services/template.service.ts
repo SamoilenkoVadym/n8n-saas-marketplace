@@ -81,11 +81,9 @@ export const create = async (data: CreateTemplateData) => {
   return template;
 };
 
-// List published templates with filters
+// List all templates with filters (includes unpublished for display purposes)
 export const list = async (filters?: TemplateFilters) => {
-  const where: any = {
-    isPublished: true,
-  };
+  const where: any = {};
 
   // Apply filters
   if (filters?.category) {
@@ -204,13 +202,46 @@ export const download = async (id: string, userId: string) => {
   }
 
   // Check access
-  const hasAccess =
-    template.price === 0 || // Free template
-    userId === template.authorId || // User is the author
-    await checkUserPurchased(userId, id); // User purchased it
+  const isFree = template.price === 0;
+  const isAuthor = userId === template.authorId;
+  const alreadyPurchased = await checkUserPurchased(userId, id);
 
-  if (!hasAccess) {
-    throw new Error('Access denied: purchase required');
+  // If not free, not author, and not purchased - process purchase
+  if (!isFree && !isAuthor && !alreadyPurchased) {
+    // Check user has enough credits
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { credits: true },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.credits < template.price) {
+      throw new Error(`Insufficient credits. Required: ${template.price}, Available: ${user.credits}`);
+    }
+
+    // Create purchase and deduct credits in a transaction
+    await prisma.$transaction([
+      // Deduct credits from user
+      prisma.user.update({
+        where: { id: userId },
+        data: {
+          credits: {
+            decrement: template.price,
+          },
+        },
+      }),
+      // Record purchase
+      prisma.purchase.create({
+        data: {
+          userId,
+          templateId: id,
+          credits: template.price,
+        },
+      }),
+    ]);
   }
 
   // Increment downloads counter
@@ -223,10 +254,36 @@ export const download = async (id: string, userId: string) => {
     },
   });
 
+  // Use cached workflow JSON if available, otherwise try to fetch from n8n-workflows
+  let workflowJson = template.workflowJson;
+
+  // Check if workflowJson is empty (for n8n-workflows templates that haven't been cached yet)
+  const isWorkflowEmpty =
+    !workflowJson || (typeof workflowJson === 'object' && Object.keys(workflowJson).length === 0);
+
+  if (template.sourceType === 'n8n-workflows' && template.n8nWorkflowFilename && isWorkflowEmpty) {
+    try {
+      logger.info(`Fetching workflow JSON from n8n-workflows for ${template.name}`);
+      const n8nWorkflowsService = require('./n8n-workflows.service').default;
+      const fetchedWorkflow = await n8nWorkflowsService.downloadWorkflow(template.n8nWorkflowFilename);
+      workflowJson = fetchedWorkflow;
+
+      // Update template with fetched workflow for caching
+      await prisma.template.update({
+        where: { id },
+        data: { workflowJson: fetchedWorkflow },
+      });
+      logger.info(`Cached workflow JSON for ${template.name}`);
+    } catch (error) {
+      logger.error(`Failed to fetch workflow from n8n-workflows: ${error}`);
+      // Fall back to stored workflowJson (may be empty)
+    }
+  }
+
   return {
     id: template.id,
     name: template.name,
-    workflowJson: template.workflowJson,
+    workflowJson,
   };
 };
 

@@ -65,19 +65,26 @@ services:
     ports:
       - "4000:4000"
     environment:
+      # Application Configuration
       - NODE_ENV=development
       - PORT=4000
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/marketplace?schema=public
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - JWT_SECRET=super-secret-jwt-key-change-in-production-please
+      - FRONTEND_URL=http://localhost:3001
+
+      # Security Keys (set in docker-compose.override.yml)
+      - JWT_SECRET=${JWT_SECRET:-change-this-secret}
       - JWT_EXPIRES_IN=7d
-      - ENCRYPTION_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-      - STRIPE_SECRET_KEY=sk_test_placeholder
-      - STRIPE_WEBHOOK_SECRET=whsec_placeholder
-      - FRONTEND_URL=http://localhost:3000
-      - AZURE_OPENAI_ENDPOINT=https://placeholder.openai.azure.com
-      - AZURE_OPENAI_API_KEY=placeholder
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-change-this-64-char-hex-key}
+
+      # Stripe Configuration (set in docker-compose.override.yml)
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_your_key}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-whsec_your_secret}
+
+      # Azure OpenAI Configuration (set in docker-compose.override.yml)
+      - AZURE_OPENAI_ENDPOINT=https://aipmress-ai-n8n.openai.azure.com
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY:-your_azure_openai_key}
       - AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
     command: sh -c "npm install && npx prisma generate && npm run dev"
     depends_on:

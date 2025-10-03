@@ -55,8 +55,17 @@ class PurchaseService {
             name: true,
             description: true,
             category: true,
+            tags: true,
             price: true,
+            downloads: true,
             previewImage: true,
+            workflowJson: true,
+            author: {
+              select: {
+                name: true,
+                email: true,
+              },
+            },
           },
         },
       },

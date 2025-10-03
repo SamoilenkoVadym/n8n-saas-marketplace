@@ -85,13 +85,25 @@ n8n-saas-marketplace/
 
 3. **Set up environment variables**
 
-   Backend:
+   **Docker Compose Override (Required for secrets):**
+   ```bash
+   cp docker-compose.override.example.yml docker-compose.override.yml
+   ```
+
+   Edit `docker-compose.override.yml` and fill in your actual API keys:
+   - `AZURE_OPENAI_API_KEY` - Your Azure OpenAI API key
+   - `JWT_SECRET` - Generate with: `openssl rand -base64 32`
+   - `ENCRYPTION_KEY` - Generate with: `openssl rand -hex 32`
+   - `STRIPE_SECRET_KEY` - Your Stripe secret key (if using payments)
+   - `STRIPE_WEBHOOK_SECRET` - Your Stripe webhook secret (if using payments)
+
+   **Backend .env (Optional - for running outside Docker):**
    ```bash
    cp backend/.env.example backend/.env
    # Edit backend/.env with your configuration
    ```
 
-   Frontend:
+   **Frontend .env (Optional):**
    ```bash
    cp frontend/.env.example frontend/.env
    # Edit frontend/.env with your configuration
@@ -100,27 +112,35 @@ n8n-saas-marketplace/
 4. **Start Docker services**
    ```bash
    make up
+   # or: docker-compose up -d
    ```
 
    This will start:
    - PostgreSQL (port 5432)
    - Redis (port 6379)
    - n8n (port 5678)
+   - Backend API (port 4000)
+
+   **Note:** Docker Compose automatically merges `docker-compose.yml` with `docker-compose.override.yml`, so your secrets are loaded securely without being committed to git.
 
 5. **Run database migrations**
    ```bash
    make db-migrate
    ```
 
-6. **Start development servers**
-   ```bash
-   npm run dev
-   ```
+6. **Access the application**
+   - Frontend: http://localhost:3001
+   - Backend API: http://localhost:4000
+   - n8n: http://localhost:5678
 
-   This will start:
-   - Backend API at http://localhost:4000
-   - Frontend at http://localhost:3000
-   - n8n at http://localhost:5678
+## Security Notes
+
+⚠️ **IMPORTANT: Never commit secrets to git!**
+
+- `docker-compose.override.yml` contains your actual API keys and secrets
+- This file is gitignored and should NEVER be committed
+- Always use `docker-compose.override.example.yml` as a template
+- For production, use environment variables or secure secret management services
 
 ## Available Commands
 

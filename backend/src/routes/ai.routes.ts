@@ -176,4 +176,45 @@ router.post('/conversations/:id/regenerate', aiChatRateLimit, async (req: AuthRe
   }
 });
 
+/**
+ * DELETE /api/ai/conversations/:id
+ * Delete an AI conversation
+ */
+router.delete('/conversations/:id', async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    const { id } = req.params;
+
+    // Verify conversation belongs to user
+    const conversation = await prisma.aiConversation.findUnique({
+      where: { id },
+      select: { userId: true },
+    });
+
+    if (!conversation) {
+      res.status(404).json({ error: 'Conversation not found' });
+      return;
+    }
+
+    if (conversation.userId !== req.user.id) {
+      res.status(403).json({ error: 'Access denied' });
+      return;
+    }
+
+    // Delete conversation
+    await prisma.aiConversation.delete({
+      where: { id },
+    });
+
+    res.status(200).json({ success: true, message: 'Conversation deleted' });
+  } catch (error) {
+    console.error('Delete conversation error:', error);
+    res.status(500).json({ error: 'Failed to delete conversation' });
+  }
+});
+
 export default router;

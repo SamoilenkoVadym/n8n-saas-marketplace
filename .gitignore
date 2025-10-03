@@ -17,6 +17,11 @@ dist/
 .env
 .env*.local
 .env.production
+*.env
+!.env.example
+
+# Docker Compose Override (contains secrets)
+docker-compose.override.yml
 
 # IDEs
 .vscode/
