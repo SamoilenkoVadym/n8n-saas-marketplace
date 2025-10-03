@@ -116,20 +116,20 @@ export default function AiBuilderPage() {
           <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">
             AI Workflow Builder
           </h1>
-          <p className="text-lg text-[#94A3B8]">
+          <p className="text-lg text-[#D3DDDE]">
             Describe your automation needs and let AI build the workflow for you
           </p>
         </div>
 
-        {/* Credit Badge - Solid Orange Border */}
+        {/* Credit Badge - Bright Orange */}
         <div className="flex-shrink-0">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF6B35]/10 border border-[#FF6B35]/30">
-            <Coins className="w-4 h-4 text-[#FF6B35]" />
-            <span className="text-sm font-medium text-[#FF6B35]">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF8B05]/10 border border-[#FF8B05]/30">
+            <Coins className="w-4 h-4 text-[#FF8B05]" />
+            <span className="text-sm font-medium text-[#FF8B05]">
               {AI_CREDIT_COST} credits
             </span>
-            <div className="h-4 w-px bg-[#FF6B35]/30" />
-            <span className="text-sm text-[#94A3B8]">
+            <div className="h-4 w-px bg-[#FF8B05]/30" />
+            <span className="text-sm text-[#D3DDDE]">
               <span className="font-semibold text-white">{user?.credits ?? 0}</span> available
             </span>
           </div>
@@ -139,17 +139,17 @@ export default function AiBuilderPage() {
       {/* Insufficient Credits Warning */}
       {!hasEnoughCredits && (
         <div className="mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <div className="flex items-start gap-3 p-4 rounded-xl bg-[#FF6B35]/10 border border-[#FF6B35]/30">
-            <AlertCircle className="w-5 h-5 text-[#FF6B35] mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-[#FF8B05]/10 border border-[#FF8B05]/30">
+            <AlertCircle className="w-5 h-5 text-[#FF8B05] mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-[#FF6B35] mb-1">
+              <p className="text-sm font-medium text-[#FF8B05] mb-1">
                 You need {AI_CREDIT_COST} credits to generate workflows
               </p>
-              <p className="text-sm text-[#94A3B8]">
+              <p className="text-sm text-[#D3DDDE]">
                 You currently have {user?.credits ?? 0} credits.{' '}
                 <Link
                   href="/dashboard/credits"
-                  className="font-semibold text-[#FF6B35] hover:text-[#E55A2B] underline transition-colors"
+                  className="font-semibold text-[#075D56] hover:text-[#FF8B05] underline transition-colors"
                 >
                   Buy credits →
                 </Link>
@@ -176,8 +176,8 @@ export default function AiBuilderPage() {
                     <div
                       className={`max-w-[85%] rounded-xl px-4 py-3 ${
                         message.role === 'user'
-                          ? 'bg-[#FF6B35] text-white'
-                          : 'bg-[#2A3441] border border-[#94A3B8]/10 text-[#94A3B8]'
+                          ? 'bg-[#FF8B05] text-white'
+                          : 'bg-[#2F3E46] border border-[#D3DDDE]/10 text-[#D3DDDE]'
                       }`}
                     >
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -187,10 +187,10 @@ export default function AiBuilderPage() {
 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="bg-[#2A3441] border border-[#94A3B8]/10 rounded-xl px-4 py-3">
+                    <div className="bg-[#2F3E46] border border-[#D3DDDE]/10 rounded-xl px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <Loader2 className="w-4 h-4 animate-spin text-[#0D9488]" />
-                        <span className="text-sm text-[#94A3B8]">
+                        <Loader2 className="w-4 h-4 animate-spin text-[#075D56]" />
+                        <span className="text-sm text-[#D3DDDE]">
                           Generating workflow...
                         </span>
                       </div>
@@ -216,12 +216,12 @@ export default function AiBuilderPage() {
                     : `You need ${AI_CREDIT_COST} credits to generate workflows`
                 }
                 disabled={!hasEnoughCredits || loading}
-                className="flex-1 resize-none rounded-xl bg-[#2A3441] border border-[#94A3B8]/20 px-4 py-3 text-white placeholder:text-[#94A3B8]/50 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50 focus:border-[#FF6B35] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 resize-none rounded-xl bg-[#2F3E46] border border-[#D3DDDE]/20 px-4 py-3 text-white placeholder:text-[#D3DDDE]/50 focus:outline-none focus:ring-2 focus:ring-[#FF8B05]/50 focus:border-[#FF8B05] disabled:opacity-50 disabled:cursor-not-allowed"
                 rows={4}
               />
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-xs text-[#94A3B8]">
+              <p className="text-xs text-[#D3DDDE]">
                 {hasEnoughCredits ? 'Press Enter to send, Shift+Enter for new line' : ''}
               </p>
               <button
@@ -251,13 +251,13 @@ export default function AiBuilderPage() {
             {currentWorkflow ? (
               <WorkflowCard workflow={currentWorkflow} />
             ) : (
-              <div className="h-full flex items-center justify-center bg-[#2A3441]/50 rounded-2xl border-2 border-dashed border-[#94A3B8]/20">
+              <div className="h-full flex items-center justify-center bg-[#2F3E46]/50 rounded-2xl border-2 border-dashed border-[#D3DDDE]/20">
                 <div className="text-center max-w-md px-6">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#0D9488]/10 flex items-center justify-center">
-                    <Send className="w-8 h-8 text-[#0D9488]" />
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#075D56]/10 flex items-center justify-center">
+                    <Send className="w-8 h-8 text-[#075D56]" />
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Workflow Preview</h3>
-                  <p className="text-sm text-[#94A3B8]">
+                  <p className="text-sm text-[#D3DDDE]">
                     Your generated workflow will appear here with a detailed preview, node list, and JSON export
                   </p>
                 </div>

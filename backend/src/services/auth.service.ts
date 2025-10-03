@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import prisma from '../config/database';
 import { generateToken } from '../utils/jwt';
+import { logger } from '../config/logger';
 
 export interface RegisterData {
   email: string;
@@ -70,19 +71,27 @@ export const register = async (data: RegisterData): Promise<AuthResponse> => {
 export const login = async (data: LoginData): Promise<AuthResponse> => {
   const { email, password } = data;
 
+  logger.debug('Login attempt', { email });
+
   // Find user
   const user = await prisma.user.findUnique({
     where: { email },
   });
 
   if (!user) {
+    logger.warn('Login failed: User not found', { email });
     throw new Error('Invalid credentials');
   }
+
+  logger.debug('User found, verifying password', { userId: user.id, email });
 
   // Verify password
   const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
+  logger.debug('Password verification result', { userId: user.id, isPasswordValid });
+
   if (!isPasswordValid) {
+    logger.warn('Login failed: Invalid password', { email, userId: user.id });
     throw new Error('Invalid credentials');
   }
 
@@ -92,6 +101,8 @@ export const login = async (data: LoginData): Promise<AuthResponse> => {
     email: user.email,
     role: user.role,
   });
+
+  logger.info('Login successful', { userId: user.id, email, role: user.role });
 
   return {
     token,

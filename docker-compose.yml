@@ -68,9 +68,17 @@ services:
       - NODE_ENV=development
       - PORT=4000
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/marketplace?schema=public
-      - REDIS_URL=redis://redis:6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - JWT_SECRET=super-secret-jwt-key-change-in-production-please
       - JWT_EXPIRES_IN=7d
+      - ENCRYPTION_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+      - STRIPE_SECRET_KEY=sk_test_placeholder
+      - STRIPE_WEBHOOK_SECRET=whsec_placeholder
+      - FRONTEND_URL=http://localhost:3000
+      - AZURE_OPENAI_ENDPOINT=https://placeholder.openai.azure.com
+      - AZURE_OPENAI_API_KEY=placeholder
+      - AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
     command: sh -c "npm install && npx prisma generate && npm run dev"
     depends_on:
       postgres:

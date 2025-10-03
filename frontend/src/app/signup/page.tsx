@@ -4,10 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -35,41 +31,61 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Sign Up</CardTitle>
-          <CardDescription>Create a new account</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#243037] px-4">
+      <div className="w-full max-w-md">
+        {/* Logo/Brand */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">n8n Marketplace</h1>
+          <p className="text-[#D3DDDE]">Create your account</p>
+        </div>
+
+        {/* Form Card */}
+        <div className="bg-[#2F3E46] rounded-2xl shadow-lg p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
             {(localError || error) && (
-              <div className="text-red-500 text-sm">{localError || error}</div>
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                <p className="text-red-400 text-sm">{localError || error}</p>
+              </div>
             )}
+
+            {/* Name Field */}
             <div className="space-y-2">
-              <Label htmlFor="name">Name (optional)</Label>
-              <Input
+              <label htmlFor="name" className="block text-[#D3DDDE] font-medium text-sm">
+                Name <span className="text-[#94A3B8]">(optional)</span>
+              </label>
+              <input
                 id="name"
                 type="text"
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-3 bg-[#E8EEEF] text-[#243037] rounded-lg border border-[#D3DDDE] focus:outline-none focus:ring-2 focus:ring-[#FF8B05] focus:border-[#FF8B05] transition-colors"
               />
             </div>
+
+            {/* Email Field */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
+              <label htmlFor="email" className="block text-[#D3DDDE] font-medium text-sm">
+                Email
+              </label>
+              <input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full px-4 py-3 bg-[#E8EEEF] text-[#243037] rounded-lg border border-[#D3DDDE] focus:outline-none focus:ring-2 focus:ring-[#FF8B05] focus:border-[#FF8B05] transition-colors"
               />
             </div>
+
+            {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
+              <label htmlFor="password" className="block text-[#D3DDDE] font-medium text-sm">
+                Password
+              </label>
+              <input
                 id="password"
                 type="password"
                 placeholder="••••••••"
@@ -77,23 +93,30 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
+                className="w-full px-4 py-3 bg-[#E8EEEF] text-[#243037] rounded-lg border border-[#D3DDDE] focus:outline-none focus:ring-2 focus:ring-[#FF8B05] focus:border-[#FF8B05] transition-colors"
               />
-              <p className="text-xs text-gray-500">Must be at least 8 characters</p>
+              <p className="text-xs text-[#94A3B8]">Must be at least 8 characters</p>
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Loading...' : 'Sign Up'}
-            </Button>
-            <p className="text-sm text-center text-gray-600">
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full px-4 py-3 bg-[#FF8B05] hover:bg-[#E67A00] text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Creating account...' : 'Create Account'}
+            </button>
+
+            {/* Login Link */}
+            <p className="text-sm text-center text-[#D3DDDE]">
               Already have an account?{' '}
-              <Link href="/login" className="text-blue-600 hover:underline">
-                Login
+              <Link href="/login" className="text-[#075D56] hover:text-[#FF8B05] font-medium transition-colors">
+                Sign in
               </Link>
             </p>
-          </CardFooter>
-        </form>
-      </Card>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

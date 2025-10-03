@@ -4,22 +4,22 @@
 
 @layer base {
   :root {
-    /* Aimpress Brand Colors - Solid Colors Only (No Gradients) */
-    --denim: #1E3A5F;           /* Dark blue - headers, navigation */
-    --deep-turquoise: #0D9488;  /* Teal - links, active states */
-    --grey-blue: #94A3B8;       /* Secondary text, borders */
-    --orange: #FF6B35;          /* CTAs, important actions */
-    --pure: #FFF9E6;            /* Light backgrounds */
+    /* Aimpress Brand Colors - Exact Figma Palette */
+    --charcoal: #243037;        /* Main dark background */
+    --card-dark: #2F3E46;       /* Elevated cards */
+    --bright-orange: #FF8B05;   /* Primary CTAs, important actions */
+    --aqua-green: #075D56;      /* Success, active states, links */
+    --cloud-grey: #D3DDDE;      /* Secondary text, borders */
+    --cloud-grey-light: #E8EEEF; /* Input backgrounds */
 
-    /* Backgrounds */
-    --dark-bg: #1A2332;         /* Main dark background */
-    --card-bg: #2A3441;         /* Elevated cards */
-    --surface: #0F172A;         /* Deep surface color */
-
-    /* Text */
+    /* Text Colors */
     --text-primary: #FFFFFF;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
+    --text-secondary: #D3DDDE;
+    --text-muted: #94A3B8;
+
+    /* Hover States */
+    --orange-hover: #E67A00;
+    --aqua-hover: #064A45;
   }
 }
 
@@ -29,7 +29,7 @@
   }
 
   body {
-    @apply bg-[#1A2332] text-white;
+    @apply bg-[#243037] text-white;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
     font-feature-settings: 'cv11', 'ss01';
     font-variation-settings: 'opsz' 32;
@@ -42,7 +42,7 @@
   }
 
   p {
-    @apply leading-relaxed text-[#94A3B8];
+    @apply leading-relaxed text-[#D3DDDE];
   }
 }
 
@@ -59,10 +59,10 @@
 
   @keyframes pulse-orange {
     0%, 100% {
-      box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4);
+      box-shadow: 0 0 0 0 rgba(255, 139, 5, 0.4);
     }
     50% {
-      box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
+      box-shadow: 0 0 0 10px rgba(255, 139, 5, 0);
     }
   }
 
@@ -105,77 +105,77 @@
   }
 }
 
-/* Aimpress Component Styles - Solid Colors Only */
+/* Aimpress Component Styles - Exact Figma Colors */
 @layer components {
   /* Navigation */
   .nav-aimpress {
     @apply fixed top-0 left-0 right-0 z-50;
-    @apply bg-[#1E3A5F] border-b border-[#FF6B35]/10;
+    @apply bg-[#243037] border-b border-[#D3DDDE]/10;
     @apply backdrop-blur-sm;
   }
 
   .nav-link {
-    @apply text-[#94A3B8] hover:text-[#FF6B35];
+    @apply text-[#D3DDDE] hover:text-[#FF8B05];
     @apply transition-colors duration-200 font-medium;
   }
 
   .nav-link-active {
-    @apply text-[#0D9488] font-semibold;
+    @apply text-[#FF8B05] font-semibold;
   }
 
   /* Cards */
   .card-aimpress {
-    @apply rounded-2xl shadow-lg border border-[#94A3B8]/10;
-    @apply bg-[#2A3441] transition-all duration-300;
+    @apply rounded-2xl shadow-lg border border-[#D3DDDE]/10;
+    @apply bg-[#2F3E46] transition-all duration-300;
   }
 
   .card-aimpress:hover {
-    @apply shadow-xl border-[#0D9488]/30;
+    @apply shadow-xl border-[#075D56]/30;
     transform: translateY(-4px);
   }
 
-  /* Buttons - Solid Colors Only */
+  /* Buttons - Exact Figma Colors */
   .btn-primary {
-    @apply bg-[#FF6B35] hover:bg-[#E55A2B] text-white font-semibold;
+    @apply bg-[#FF8B05] hover:bg-[#E67A00] text-white font-semibold;
     @apply rounded-xl px-6 py-3 transition-all duration-300;
     @apply shadow-lg hover:shadow-xl;
   }
 
   .btn-secondary {
-    @apply bg-[#0D9488] hover:bg-[#0B7A6F] text-white font-semibold;
+    @apply bg-[#075D56] hover:bg-[#064A45] text-white font-semibold;
     @apply rounded-xl px-6 py-3 transition-all duration-300;
     @apply shadow-lg hover:shadow-xl;
   }
 
   .btn-ghost {
-    @apply border-2 border-[#94A3B8] hover:border-[#FF6B35];
-    @apply text-[#94A3B8] hover:text-[#FF6B35];
+    @apply border-2 border-[#D3DDDE] hover:border-[#FF8B05];
+    @apply text-[#D3DDDE] hover:text-[#FF8B05];
     @apply rounded-xl px-6 py-3 transition-all duration-300;
     @apply bg-transparent;
   }
 
   /* Inputs */
   .input-aimpress {
-    @apply bg-[#2A3441] border border-[#94A3B8]/20;
-    @apply rounded-xl px-4 py-3 text-white;
-    @apply focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50;
-    @apply focus:border-[#FF6B35];
+    @apply bg-[#E8EEEF] border border-[#D3DDDE];
+    @apply rounded-xl px-4 py-3 text-[#243037];
+    @apply focus:outline-none focus:ring-2 focus:ring-[#FF8B05]/50;
+    @apply focus:border-[#FF8B05];
   }
 
-  /* Badges - Solid Colors */
+  /* Badges - Exact Figma Colors */
   .badge-orange {
-    @apply bg-[#FF6B35]/10 text-[#FF6B35] border border-[#FF6B35]/30;
+    @apply bg-[#FF8B05]/10 text-[#FF8B05] border border-[#FF8B05]/30;
     @apply rounded-full px-4 py-1.5 text-sm font-medium;
   }
 
-  .badge-turquoise {
-    @apply bg-[#0D9488]/10 text-[#0D9488] border border-[#0D9488]/30;
+  .badge-aqua {
+    @apply bg-[#075D56]/10 text-[#075D56] border border-[#075D56]/30;
     @apply rounded-full px-4 py-1.5 text-sm font-medium;
   }
 
   /* Links */
   .link-aimpress {
-    @apply text-[#0D9488] hover:text-[#FF6B35];
+    @apply text-[#075D56] hover:text-[#FF8B05];
     @apply transition-colors duration-200;
   }
 }
@@ -188,16 +188,16 @@
   }
 
   .scrollbar-aimpress::-webkit-scrollbar-track {
-    background: #1A2332;
+    background: #243037;
     border-radius: 4px;
   }
 
   .scrollbar-aimpress::-webkit-scrollbar-thumb {
-    background: #94A3B8;
+    background: #D3DDDE;
     border-radius: 4px;
   }
 
   .scrollbar-aimpress::-webkit-scrollbar-thumb:hover {
-    background: #0D9488;
+    background: #FF8B05;
   }
 }
