@@ -49,6 +49,7 @@ router.post('/:id/download', authMiddleware, async (req: AuthRequest, res: Respo
     const workflow = await templateService.download(id, userId);
     res.status(200).json(workflow);
   } catch (error) {
+    console.error('Download template error:', error);
     if (error instanceof Error) {
       if (error.message === 'Template not found') {
         res.status(404).json({ error: error.message });
@@ -63,7 +64,7 @@ router.post('/:id/download', authMiddleware, async (req: AuthRequest, res: Respo
         return;
       }
     }
-    res.status(500).json({ error: 'Failed to download template' });
+    res.status(500).json({ error: 'Failed to download template', details: error instanceof Error ? error.message : String(error) });
   }
 });
 
