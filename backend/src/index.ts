@@ -81,8 +81,25 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 
+// Allow both local and external access
+const allowedOrigins = [
+  env.FRONTEND_URL,
+  'http://192.168.1.180:3001',
+  'http://localhost:3001',
+  'http://83.151.203.105:3001'
+];
+
 app.use(cors({
-  origin: env.FRONTEND_URL,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 
